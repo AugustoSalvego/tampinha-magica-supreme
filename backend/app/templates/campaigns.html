@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Campanhas</p><h1>Metas de arrecadação</h1><p>Use campanhas para motivar turmas sem complicar o MVP.</p></div></section>
+<section class="two-columns">
+  <article class="panel"><h2>Nova campanha</h2><form class="form-stack" method="post" action="/campaigns/create"><label>Nome<input name="name" required placeholder="Campanha Junho Verde"></label><label>Meta em gramas<input name="goal_grams" type="number" required value="10000"></label><label>Descrição<textarea name="description"></textarea></label><button class="primary">Criar campanha</button></form></article>
+  <article class="panel"><h2>Campanhas</h2>{% for c in campaigns %}<div class="list-card"><div><strong>{{ c.name }}</strong><small>Meta: {{ c.goal_grams }}g · Progresso geral: {{ total_credits }}g</small></div><span class="status-pill {{ 'ok' if c.active else 'warn' }}">{{ 'Ativa' if c.active else 'Inativa' }}</span></div>{% else %}<div class="empty">Nenhuma campanha cadastrada.</div>{% endfor %}</article>
+</section>
+{% endblock %}

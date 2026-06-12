@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header">
+  <div><p class="eyebrow">Alunos</p><h1>Cadastro simples e seguro</h1><p>Use nome, turma, número de chamada e cartão.</p></div>
+  <a class="primary" href="/students/new">Novo aluno</a>
+</section>
+
+<form class="search-bar" method="get" action="/students">
+  <input name="q" placeholder="Pesquisar por nome, chamada, cartão ou observação" value="{{ q }}">
+  <select name="classroom_id">
+    <option value="">Todas as turmas</option>
+    {% for c in classrooms %}<option value="{{ c.id }}" {% if classroom_id==c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+  </select>
+  <select name="status_filter">
+    <option value="active" {% if status_filter=='active' %}selected{% endif %}>Ativos</option>
+    <option value="inactive" {% if status_filter=='inactive' %}selected{% endif %}>Desativados</option>
+    <option value="all" {% if status_filter=='all' %}selected{% endif %}>Todos</option>
+  </select>
+  <button class="secondary" type="submit">Pesquisar</button>
+</form>
+
+<section class="card-list">
+  {% for student in students %}
+    <a class="student-card" href="/students/{{ student.id }}">
+      <div>
+        <strong>{{ student.name }}</strong>
+        <small>{{ student.classroom.name if student.classroom else "Sem turma" }} · Nº {{ student.call_number or "-" }} · {{ student.display_code }}</small>
+        <span class="status-pill {{ 'ok' if student.rfid_uid else 'warn' }}">{{ 'Cartão vinculado' if student.rfid_uid else 'Sem cartão' }}</span>
+        {% if not student.active %}<span class="status-pill danger">Desativado</span>{% endif %}
+      </div>
+      <div class="score">{{ student.total_credits }}<small>créditos</small></div>
+    </a>
+  {% else %}
+    <div class="empty">Nenhum aluno encontrado. Tente outra busca ou cadastre um novo aluno.</div>
+  {% endfor %}
+</section>
+{% endblock %}

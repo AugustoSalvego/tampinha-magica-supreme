@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Backups</p><h1>Proteção dos dados</h1><p>No MVP local, gere backups manuais antes de testes importantes.</p></div><form method="post" action="/backups/create"><button class="primary">Gerar backup agora</button></form></section>
+<section class="panel"><h2>Backups gerados</h2>{% for b in backups %}<div class="list-card"><div><strong>{{ b.name }}</strong><small>Arquivo local em backend/data/backups</small></div></div>{% else %}<div class="empty">Nenhum backup gerado ainda.</div>{% endfor %}</section>
+{% endblock %}

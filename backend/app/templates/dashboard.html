@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Painel do professor</p>
+    <h1>Controle os créditos de reciclagem com segurança.</h1>
+    <p>Cadastre alunos, acompanhe depósitos em tempo real e mantenha histórico auditável.</p>
+  </div>
+  <div class="quick-actions">
+    <a class="primary" href="/students/new">Cadastrar aluno</a>
+    <a class="secondary" href="/transactions">Nova correção</a>
+  </div>
+</section>
+
+<section class="metrics-grid">
+  <article class="metric"><span>Total reciclado</span><strong>{{ metrics.kg }} kg</strong><small>{{ metrics.credits }} créditos</small></article>
+  <article class="metric"><span>Alunos ativos</span><strong>{{ metrics.students }}</strong><small>{{ metrics.classrooms }} turmas</small></article>
+  <article class="metric"><span>Depósitos</span><strong>{{ metrics.deposits }}</strong><small>{{ metrics.corrections }} correções</small></article>
+  <article class="metric"><span>Maquininhas</span><strong>{{ metrics.devices }}</strong><small>com conexão registrada</small></article>
+</section>
+
+<section class="two-columns">
+  <article class="panel">
+    <div class="panel-header"><h2>Últimos depósitos</h2><a href="/transactions">Ver tudo</a></div>
+    <div id="recent-transactions" data-live-recent>
+      {% for tx in recent %}
+        <div class="list-card">
+          <div><strong>{{ tx.student.name }}</strong><small>{{ tx.student.classroom.name if tx.student.classroom else "Sem turma" }} · {{ tx.kind }}</small></div>
+          <div class="score {{ 'positive' if tx.credits >= 0 else 'negative' }}">{{ '+' if tx.credits >= 0 else '' }}{{ tx.credits }}</div>
+        </div>
+      {% else %}
+        <div class="empty">Nenhum depósito ainda. Use o simulador ou cadastre uma coleta.</div>
+      {% endfor %}
+    </div>
+  </article>
+
+  <article class="panel">
+    <div class="panel-header"><h2>Alunos destaque</h2><a href="/ranking">Ranking</a></div>
+    {% for student in top_students %}
+      <a class="list-card clickable" href="/students/{{ student.id }}">
+        <div><strong>{{ loop.index }}º · {{ student.name }}</strong><small>{{ student.classroom.name if student.classroom else "Sem turma" }} · Nº {{ student.call_number or "-" }}</small></div>
+        <div class="score">{{ student.total_credits }}</div>
+      </a>
+    {% else %}
+      <div class="empty">Cadastre alunos para gerar ranking.</div>
+    {% endfor %}
+  </article>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>Turmas</h2><a href="/classrooms">Gerenciar</a></div>
+  <div class="card-grid">
+  {% for classroom in classrooms %}
+    <a class="compact-card" href="/classrooms/{{ classroom.id }}">
+      <strong>{{ classroom.name }}</strong>
+      <small>{{ classroom.students|selectattr('active')|list|length }} alunos</small>
+    </a>
+  {% else %}
+    <div class="empty">Crie a primeira turma para começar.</div>
+  {% endfor %}
+  </div>
+</section>
+{% endblock %}

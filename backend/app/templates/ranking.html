@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Ranking</p><h1>Gamificação simples</h1><p>Motivação sem confundir o professor.</p></div></section>
+<section class="two-columns">
+  <article class="panel"><h2>Alunos</h2>{% for s in students %}<a class="list-card clickable" href="/students/{{ s.id }}"><div><strong>{{ loop.index }}º · {{ s.name }}</strong><small>{{ s.classroom.name if s.classroom else 'Sem turma' }} · Nível: {{ 'Diamante' if s.total_credits>=3000 else 'Ouro' if s.total_credits>=1500 else 'Prata' if s.total_credits>=500 else 'Bronze' }}</small></div><span>{{ s.total_credits }}</span></a>{% else %}<div class="empty">Sem alunos.</div>{% endfor %}</article>
+  <article class="panel"><h2>Turmas</h2>{% for item in classroom_ranking %}<a class="list-card clickable" href="/classrooms/{{ item.classroom.id }}"><div><strong>{{ loop.index }}º · {{ item.classroom.name }}</strong><small>{{ item.kg }} kg reciclados</small></div><span>{{ item.total }}</span></a>{% else %}<div class="empty">Sem turmas.</div>{% endfor %}</article>
+</section>
+{% endblock %}

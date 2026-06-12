@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Database / local data
+*.db
+*.sqlite
+*.sqlite3
+backend/data/
+backend/*.db
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Arduino / PlatformIO temporary files
+*.elf
+*.bin
+*.hex
+*.map
+*.bak
+build/
+.pio/
+
+# Logs
+*.log
+
+# Local secrets
+secrets.h
+wifi_config.h

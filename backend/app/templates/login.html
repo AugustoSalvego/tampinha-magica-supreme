@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar · Tampinha Mágica</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="login-body">
+  <section class="login-card">
+    <div class="brand centered"><span class="brand-mark">♻</span><span><strong>Tampinha Mágica</strong><small>Créditos por reciclagem</small></span></div>
+    {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+    {% if flash %}<div class="alert success">{{ flash }}</div>{% endif %}
+    <form method="post" action="/login" class="form-stack">
+      <label>Usuário<input name="username" required autocomplete="username" value="admin"></label>
+      <label>Senha<input name="password" type="password" required autocomplete="current-password" value="admin123"></label>
+      <button class="primary" type="submit">Entrar no sistema</button>
+    </form>
+    <p class="muted">Acesso inicial: <strong>admin</strong> / <strong>admin123</strong>. Troque antes de uso real.</p>
+  </section>
+</body>
+</html>

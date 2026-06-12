@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="eyebrow">{{ student.display_code }}</p>
+    <h1>{{ student.name }}</h1>
+    <p>{{ student.classroom.name if student.classroom else "Sem turma" }} · Nº {{ student.call_number or "-" }}</p>
+  </div>
+  <div class="student-total"><strong>{{ student.total_credits }}</strong><span>créditos</span></div>
+</section>
+
+<section class="two-columns">
+  <article class="panel">
+    <h2>Dados do aluno</h2>
+    <form class="form-stack" method="post" action="/students/{{ student.id }}/edit">
+      <label>Nome<input name="name" required value="{{ student.name }}"></label>
+      <label>Turma<select name="classroom_id" required>{% for c in classrooms %}<option value="{{ c.id }}" {% if student.classroom_id==c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></label>
+      <label>Número de chamada<input name="call_number" value="{{ student.call_number or '' }}"></label>
+      <label>Observação<textarea name="notes">{{ student.notes or '' }}</textarea></label>
+      <button class="primary" type="submit">Salvar alterações</button>
+    </form>
+  </article>
+
+  <article class="panel">
+    <h2>Cartão do aluno</h2>
+    <p class="muted">Cartão atual: <strong>{{ student.rfid_uid or "Nenhum cartão vinculado" }}</strong></p>
+    <form class="form-stack" method="post" action="/students/{{ student.id }}/link-card">
+      <label>Novo código do cartão<input name="rfid_uid" required placeholder="Lido pela maquininha ou digitado em teste"></label>
+      <label>Motivo obrigatório<textarea name="reason" required placeholder="Ex: aluno perdeu o cartão anterior"></textarea></label>
+      <button class="secondary" type="submit">Vincular/trocar cartão</button>
+    </form>
+  </article>
+</section>
+
+<section class="two-columns">
+  <article class="panel">
+    <h2>Histórico do aluno</h2>
+    {% for tx in transactions %}
+      <div class="list-card">
+        <div><strong>{{ tx.kind }}</strong><small>{{ tx.created_at.strftime('%d/%m/%Y %H:%M') }} · {{ tx.reason or tx.source }}</small></div>
+        <div class="score {{ 'positive' if tx.credits >= 0 else 'negative' }}">{{ '+' if tx.credits >= 0 else '' }}{{ tx.credits }}</div>
+      </div>
+    {% else %}<div class="empty">Nenhum histórico ainda.</div>{% endfor %}
+  </article>
+
+  <article class="panel caution-zone">
+    <h2>Zona de cuidado</h2>
+    <p>Use apenas em caso de aluno duplicado, transferência incorreta ou encerramento. O histórico será preservado.</p>
+    {% if student.active %}
+      <details>
+        <summary>Desativar aluno</summary>
+        <form class="form-stack" method="post" action="/students/{{ student.id }}/deactivate">
+          <label>Motivo obrigatório<textarea name="reason" required placeholder="Explique claramente por que este aluno será desativado"></textarea></label>
+          <label>Digite DESATIVAR para confirmar<input name="confirmation" required placeholder="DESATIVAR"></label>
+          <button class="danger" type="submit">Confirmar desativação</button>
+        </form>
+      </details>
+    {% else %}
+      <form class="form-stack" method="post" action="/students/{{ student.id }}/reactivate">
+        <label>Motivo para reativar<textarea name="reason" required></textarea></label>
+        <button class="secondary" type="submit">Reativar aluno</button>
+      </form>
+    {% endif %}
+  </article>
+</section>
+
+<section class="panel">
+  <h2>Auditoria recente</h2>
+  {% for log in audits %}<div class="audit-line"><strong>{{ log.action }}</strong><span>{{ log.details }}</span><small>{{ log.created_at.strftime('%d/%m/%Y %H:%M') }}</small></div>{% else %}<div class="empty">Sem registros administrativos.</div>{% endfor %}
+</section>
+{% endblock %}

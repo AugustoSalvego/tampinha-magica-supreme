@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Auditoria</p><h1>Ações importantes</h1><p>Registro para segurança e transparência.</p></div></section>
+<section class="panel">{% for log in logs %}<div class="audit-line"><strong>{{ log.action }}</strong><span>{{ log.actor }} · {{ log.entity }} #{{ log.entity_id or '-' }}</span><p>{{ log.details or '' }}</p><small>{{ log.created_at.strftime('%d/%m/%Y %H:%M') }}</small></div>{% else %}<div class="empty">Sem logs.</div>{% endfor %}</section>
+{% endblock %}

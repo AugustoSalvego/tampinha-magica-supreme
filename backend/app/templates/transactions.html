@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Depósitos e correções</p><h1>Histórico imutável</h1><p>Créditos não são editados diretamente. Correções geram novos registros com motivo obrigatório.</p></div><a class="secondary" href="/transactions/export.csv">Exportar CSV</a></section>
+
+<section class="two-columns">
+  <article class="panel">
+    <h2>Nova correção administrativa</h2>
+    <form class="form-stack" method="post" action="/corrections/create">
+      <label>Aluno<select name="student_id" required>{% for s in students %}<option value="{{ s.id }}">{{ s.name }} · {{ s.classroom.name if s.classroom else 'Sem turma' }} · Nº {{ s.call_number or '-' }}</option>{% endfor %}</select></label>
+      <label>Créditos<input name="credits" type="number" required placeholder="Use positivo ou negativo. Ex: 50 ou -20"></label>
+      <label>Motivo obrigatório<textarea name="reason" required placeholder="Explique de forma clara. Ex: depósito confirmado manualmente após falha de leitura."></textarea></label>
+      <label class="check"><input type="checkbox" name="confirm_understanding" value="yes" required> Entendo que esta correção ficará registrada no histórico.</label>
+      <button class="primary">Registrar correção</button>
+    </form>
+  </article>
+
+  <article class="panel">
+    <h2>Filtrar histórico</h2>
+    <form class="form-stack" method="get">
+      <label>Busca<input name="q" value="{{ q }}" placeholder="Aluno, cartão, motivo ou transação"></label>
+      <label>Tipo<select name="kind"><option value="all" {% if kind=='all' %}selected{% endif %}>Todos</option><option value="DEPOSIT" {% if kind=='DEPOSIT' %}selected{% endif %}>Depósitos</option><option value="CORRECTION" {% if kind=='CORRECTION' %}selected{% endif %}>Correções</option></select></label>
+      <button class="secondary">Pesquisar</button>
+    </form>
+  </article>
+</section>
+
+<section class="panel">
+  <h2>Registros</h2>
+  {% for tx in transactions %}
+    <div class="transaction-row">
+      <div><strong>{{ tx.student.name }}</strong><small>{{ tx.student.classroom.name if tx.student.classroom else 'Sem turma' }} · {{ tx.kind }} · {{ tx.created_at.strftime('%d/%m/%Y %H:%M') }}</small>{% if tx.reason %}<p>{{ tx.reason }}</p>{% endif %}</div>
+      <div class="score {{ 'positive' if tx.credits >= 0 else 'negative' }}">{{ '+' if tx.credits >= 0 else '' }}{{ tx.credits }}</div>
+    </div>
+  {% else %}<div class="empty">Nenhum registro encontrado.</div>{% endfor %}
+</section>
+{% endblock %}

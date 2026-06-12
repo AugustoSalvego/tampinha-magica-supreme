@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Turma</p><h1>{{ classroom.name }}</h1><p>{{ classroom.school_name or "Sem escola informada" }}</p></div><div class="student-total"><strong>{{ total_credits }}</strong><span>créditos</span></div></section>
+
+<section class="two-columns">
+  <article class="panel">
+    <h2>Editar turma</h2>
+    <form class="form-stack" method="post" action="/classrooms/{{ classroom.id }}/edit">
+      <label>Nome<input name="name" required value="{{ classroom.name }}"></label>
+      <label>Escola<input name="school_name" value="{{ classroom.school_name or '' }}"></label>
+      <button class="primary">Salvar turma</button>
+    </form>
+  </article>
+  <article class="panel">
+    <h2>Resumo</h2>
+    <div class="metrics-grid mini"><article class="metric"><span>Alunos</span><strong>{{ students|length }}</strong></article><article class="metric"><span>Total reciclado</span><strong>{{ (total_credits/1000)|round(2) }} kg</strong></article></div>
+  </article>
+</section>
+
+<section class="panel"><div class="panel-header"><h2>Alunos da turma</h2><a href="/students/new">Novo aluno</a></div>
+{% for s in students %}<a class="list-card clickable" href="/students/{{ s.id }}"><div><strong>{{ s.name }}</strong><small>Nº {{ s.call_number or '-' }} · {{ 'Cartão vinculado' if s.rfid_uid else 'Sem cartão' }}</small></div><span>{{ s.total_credits }} créditos</span></a>{% else %}<div class="empty">Nenhum aluno nesta turma.</div>{% endfor %}</section>
+
+<section class="panel"><h2>Últimos depósitos da turma</h2>{% for tx in recent %}<div class="list-card"><div><strong>{{ tx.student.name }}</strong><small>{{ tx.created_at.strftime('%d/%m/%Y %H:%M') }}</small></div><span>{{ tx.credits }} créditos</span></div>{% else %}<div class="empty">Sem depósitos nesta turma.</div>{% endfor %}</section>
+{% endblock %}

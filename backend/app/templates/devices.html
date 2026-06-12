@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Maquininhas</p><h1>Terminais de coleta</h1><p>Cada maquininha se identifica sozinha ao enviar depósitos.</p></div></section>
+<section class="two-columns">
+  <article class="panel"><h2>Nova maquininha</h2><form class="form-stack" method="post" action="/devices/create"><label>Código interno<input name="device_id" required placeholder="terminal-02"></label><label>Chave secreta<input name="device_key" required placeholder="senha-da-maquininha"></label><label>Nome<input name="name" required placeholder="Maquininha da sala 1"></label><label>Local<input name="location" placeholder="Com o professor"></label><button class="primary">Cadastrar maquininha</button></form></article>
+  <article class="panel"><h2>Maquininhas cadastradas</h2>{% for d in devices %}<div class="list-card"><div><strong>{{ d.name }}</strong><small>{{ d.device_id }} · {{ d.location or 'Sem local' }} · Firmware {{ d.firmware_version or '-' }}</small><small>Última conexão: {{ d.last_seen_at.strftime('%d/%m/%Y %H:%M') if d.last_seen_at else 'nunca' }}</small></div><span class="status-pill {{ 'ok' if d.active else 'danger' }}">{{ 'Ativa' if d.active else 'Inativa' }}</span></div>{% else %}<div class="empty">Nenhuma maquininha cadastrada.</div>{% endfor %}</article>
+</section>
+{% endblock %}

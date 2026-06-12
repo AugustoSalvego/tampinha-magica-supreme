@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Turmas</p><h1>Organização por turma</h1><p>Pesquise, edite e veja os alunos de cada turma.</p></div></section>
+
+<form class="search-bar" method="get"><input name="q" value="{{ q }}" placeholder="Pesquisar turma ou escola"><button class="secondary">Pesquisar</button></form>
+
+<section class="two-columns">
+  <article class="panel">
+    <h2>Nova turma</h2>
+    <form class="form-stack" method="post" action="/classrooms/create">
+      <label>Nome da turma<input name="name" required placeholder="Ex: 5º Ano A"></label>
+      <label>Escola <span class="optional">opcional</span><input name="school_name" placeholder="Ex: Escola Municipal..."></label>
+      <button class="primary">Cadastrar turma</button>
+    </form>
+  </article>
+
+  <article class="panel">
+    <h2>Turmas cadastradas</h2>
+    {% for c in classrooms %}
+      <a class="list-card clickable" href="/classrooms/{{ c.id }}"><div><strong>{{ c.name }}</strong><small>{{ c.school_name or "Sem escola informada" }}</small></div><span>{{ c.students|selectattr('active')|list|length }} alunos</span></a>
+    {% else %}<div class="empty">Nenhuma turma cadastrada.</div>{% endfor %}
+  </article>
+</section>
+{% endblock %}

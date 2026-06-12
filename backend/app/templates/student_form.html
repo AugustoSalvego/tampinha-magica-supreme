@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header"><div><p class="eyebrow">Novo aluno</p><h1>Cadastro rápido</h1><p>Evite muitos campos. O essencial é nome, turma, chamada e cartão.</p></div></section>
+
+<form class="panel form-stack" method="post" action="{{ '/students/create' if preview else '/students/preview' }}">
+  <label>Nome do aluno<input name="name" required value="{{ student.name if student else '' }}" placeholder="Ex: João Silva"></label>
+  <label>Turma<select name="classroom_id" required>
+    <option value="">Selecione uma turma</option>
+    {% for c in classrooms %}<option value="{{ c.id }}" {% if student and student.classroom_id==c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+  </select></label>
+  <label>Número de chamada<input name="call_number" value="{{ student.call_number if student else '' }}" placeholder="Ex: 12"></label>
+  <label>Cartão RFID <span class="optional">opcional agora</span><input name="rfid_uid" value="{{ student.rfid_uid if student else '' }}" placeholder="Depois será lido pela maquininha"></label>
+  <label>Observação <span class="optional">opcional</span><textarea name="notes" placeholder="Use apenas se precisar diferenciar alunos com nomes iguais">{{ student.notes if student else '' }}</textarea></label>
+
+  {% if duplicates %}
+  <div class="alert warning">
+    <strong>Verifique antes de cadastrar:</strong>
+    <p>Encontramos alunos parecidos ou com o mesmo número de chamada nesta turma.</p>
+    {% for s in duplicates %}
+      <a class="list-card clickable" href="/students/{{ s.id }}"><div><strong>{{ s.name }}</strong><small>{{ s.classroom.name if s.classroom else 'Sem turma' }} · Nº {{ s.call_number or '-' }}</small></div><span>{{ s.total_credits }} créditos</span></a>
+    {% endfor %}
+    <p>Se for realmente outro aluno, continue o cadastro.</p>
+  </div>
+  {% endif %}
+
+  <div class="button-row">
+    {% if preview %}<button class="primary" type="submit">Cadastrar mesmo assim</button>{% else %}<button class="primary" type="submit">Verificar e continuar</button>{% endif %}
+    <a class="ghost" href="/students">Cancelar</a>
+  </div>
+</form>
+{% endblock %}
